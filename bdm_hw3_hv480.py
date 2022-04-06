@@ -30,7 +30,7 @@ if __name__=='__main__':
   spark = SparkSession(sc)
   spark
 
-  kf_rdd = sc.textFile(sys.argv[1] if len(sys.argv)>1 else 'keyfood_products.csv', use_unicode=True).cache()
+  kf_rdd = sc.textFile(sys.argv[1] if len(sys.argv)>1 else '/tmp/bdm/keyfood_products.csv', use_unicode=True).cache()
 
   reader = csv.reader(open('keyfood_sample_items.csv', 'r'))
   sample_dict = {'upc_code':[],'item_name':[]}
