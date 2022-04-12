@@ -1,5 +1,5 @@
 import pyspark
-
+from pyspark import SparkContext
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 from pyspark.sql import types as T
@@ -14,7 +14,7 @@ def main(sc):
 
   spark = SparkSession(sc)
 
-  kf_rdd = sc.textFile('/tmp/bdm/keyfood_products.csv', use_unicode=True).cache()
+  kf_rdd = sc.textFile('keyfood_products.csv', use_unicode=True).cache()
   reader = csv.reader(open('keyfood_sample_items.csv', 'r'))
   sample_dict = {'upc_code':[],'item_name':[]}
   for row in reader:
@@ -49,12 +49,9 @@ def main(sc):
   outputTask1 = outputTask1.cache()
   outputTask1.count()
 
-  outputTask1_rdd = outputTask1.rdd.map(lambda x: (x[0],x[1],x[2])).cache()
-  outputTask1_str = ([','.join(map(str, item)) for item in outputTask1_rdd.collect()])
-  outputTask1_str.saveAsTextFile(sys.argv[1] if len(sys.argv)>1 else 'output')
+  outputTask1.saveAsTextFile(sys.argv[1] if len(sys.argv)>1 else 'output')
 
 
 if __name__=="__main__":
   sc = pyspark.SparkContext.getOrCreate()
   main(sc)
-
