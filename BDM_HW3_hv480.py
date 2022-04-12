@@ -1,4 +1,5 @@
-from pyspark import SparkContext
+import pyspark
+
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 from pyspark.sql import types as T
@@ -48,7 +49,9 @@ def main(sc):
   outputTask1 = outputTask1.cache()
   outputTask1.count()
 
-  outputTask1.saveAsTextFile(sys.argv[1] if len(sys.argv)>1 else 'output')
+  outputTask1_rdd = outputTask1.rdd.map(lambda x: (x[0],x[1],x[2])).cache()
+  outputTask1_str = ([','.join(map(str, item)) for item in outputTask1_rdd.collect()])
+  outputTask1_str.saveAsTextFile(sys.argv[1] if len(sys.argv)>1 else 'output')
 
 
 if __name__=="__main__":
